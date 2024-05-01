@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Form</title>
+</head>
+<body>
+
+<h2>Add Document</h2>
+<form action="adminAddDocProceedings.php" method="post">
+
+<h3>Proceedings Details</h3>
+<!-- Add proceedings-specific form fields here -->
+<input type="hidden" id="doc_type" name="doc_type" value="proceedings_form">
+<label for="proceedings_title">Title:</label>
+<input type="text" id="proceedings_title" name="proceedings_title"><br><br>
+<label for="conference_date">Conference Date:</label>
+<input type="text" id="conference_date" name="conference_date"><br><br>
+<label for="conference_location">Conference Location:</label>
+<input type="text" id="conference_location" name="conference_location"><br><br>
+<label for="conference_chair">Conference Chairs (Chairs in csv format i.e. Char1, Chair2, Chair3, etc.):</label>
+<input type="text" id="conference_chair" name="conference_chair"><br><br>
+<h2>Document General Attributes</h2>
+<label for="pdate">Publication Date:</label>
+<input type="text" id="pdate" name="pdate"><br><br>
+<label for="pid">Publisher ID:</label>
+<input type="text" id="pid" name="pid"><br><br>
+
+<!-- Submit Button -->
+<input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

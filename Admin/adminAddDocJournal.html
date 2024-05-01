@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Form</title>
+</head>
+<body>
+
+<h2>Add New Journal</h2>
+<form action="adminAddDocJournal.php" method="post">
+
+<h3>Journal Details</h3>
+<!-- Add journal-specific form fields here -->
+<input type="hidden" id="doc_type" name="doc_type" value="journal_form">
+<label for="journal_volume">Journal Volume Number:</label>
+<input type="text" id="journal_volume" name="journal_volume"><br><br>
+<label for="journal_issue_num">Journal Issue Count (Number of Issues for this journal):</label>
+<input type="text" id="journal_issue_num" name="journal_issue_num"><br><br>
+<label for="journal_issue_scope">Journal Issue Scopes (Scopes for each issue in csv format i.e. Scope 1, Scope 2, Scope 3, etc.):</label>
+<input type="text" id="journal_issue_scope" name="journal_issue_scope"><br><br>
+<label for="journal_issue_editor">Journal Issue Editors:(Editors for each issue in csv starting with the issue No i.e. "1nameOfIssueOneEditor, 1nameOfIssueOneEditor, 2nameOfIssueTwoEditor, 3nameOfIssueThreeEditor, etc.)</label>
+<input type="text" id="journal_issue_editor" name="journal_issue_editor"><br><br>
+<label for="journal_volumne_editor">Journal Volume Editor:</label>
+<input type="text" id="journal_volume_editor" name="journal_volume_editor"><br><br>
+<h2>Document General Attributes</h2>
+<label for="title">Document Title:</label>
+<input type="text" id="title" name="title"><br><br>
+<label for="pdate">Publication Date:</label>
+<input type="text" id="pdate" name="pdate"><br><br>
+<label for="pid">Publisher ID:</label>
+<input type="text" id="pid" name="pid"><br><br>
+
+
+<!-- Submit Button -->
+<input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Form</title>
+</head>
+<body>
+
+<h2>Add New Book</h2>
+<form action="adminAddDocBook.php" method="post">
+
+    <h3>Book Details</h3>
+    <!-- Add book-specific form fields here -->
+    <h2>Book Specific Attributes</h2>
+        <input type="hidden" id="doc_type" name="doc_type" value="book_form">
+        <label for="book_author">Authors (inputted as csv i.e. Author 1, Author 2, Author 3, etc.):</label>
+        <input type="text" id="book_author" name="book_author"><br><br>
+        <label for="book_isbn">ISBN:</label>
+        <input type="text" id="book_isbn" name="book_isbn"><br><br>
+    <h2>Document General Attributes</h2>
+        <label for="title">Document Title:</label>
+        <input type="text" id="title" name="title"><br><br>
+        <label for="pdate">Publication Date:</label>
+        <input type="text" id="pdate" name="pdate"><br><br>
+        <label for="pid">Publisher ID:</label>
+        <input type="text" id="pid" name="pid"><br><br>
+        <!-- Submit Button -->
+        <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

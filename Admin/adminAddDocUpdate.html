@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Form</title>
+</head>
+<body>
+
+<h2>Update Document</h2>
+<form action="adminAddDocUpdate.php" method="post">
+
+<h3>Update Document</h3>
+<!-- Add proceedings-specific form fields here -->
+<input type="hidden" id="doc_type" name="doc_type" value="update_form">
+<label for="doc_id">Document ID:</label>
+<input type="text" id="doc_id" name="doc_id"><br><br>
+<label for="branch_id">Branch ID:</label>
+<input type="text" id="branch_id" name="branch_id"><br><br>
+<label for="pos">Position in Library:</label>
+<input type="text" id="pos" name="pos"><br><br>
+<label for="add">Numbers Adding:</label>
+<input type="text" id="add" name="add"><br><br>
+
+<!-- Submit Button -->
+<input type="submit" value="Submit">
+</form>
+
+</body>
+</html>
