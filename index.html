@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>Login Page</h2>
+    <form action="login.php" method="post">
+        <label for="user_type">Select User Type:</label>
+        <select name="user_type" id="user_type">
+            <option value="reader">Reader</option>
+            <option value="admin">Admin</option>
+        </select>
+        <br><br>
+        <div id="reader_login" style="display: none;">
+            <label for="card_number">Card Number:</label>
+            <input type="text" name="card_number" id="card_number">
+        </div>
+        <div id="admin_login" style="display: block;">
+            <label for="admin_id">Admin ID:</label>
+            <input type="text" name="admin_id" id="admin_id"><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password">
+        </div>
+        <br>
+        <input type="submit" value="Login">
+    </form>
+
+    <script>
+        document.getElementById('user_type').addEventListener('change', function() {
+            var readerLogin = document.getElementById('reader_login');
+            var adminLogin = document.getElementById('admin_login');
+
+            if (this.value === 'reader') {
+                readerLogin.style.display = 'block';
+                adminLogin.style.display = 'none';
+            } else if (this.value === 'admin') {
+                readerLogin.style.display = 'none';
+                adminLogin.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Form</title>
+</head>
+<body>
+    <h2>Document Checkout</h2>
+    <form method="post" action="checkout.php">
+        <label for="doc_id">Document ID:</label>
+        <input type="text" id="doc_id" name="doc_id" required><br><br>
+        
+        <label for="branch_id">Branch ID:</label>
+        <input type="text" id="branch_id" name="branch_id" required><br><br>
+        
+        <label for="copies_to_checkout">Number of Copies to Checkout:</label>
+        <input type="number" id="copies_to_checkout" name="copies_to_checkout" min="1" required><br><br>
+        
+        <button type="submit">Checkout</button>
+    </form>
+</body>
+</html>
