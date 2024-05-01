@@ -1,7 +1,8 @@
 <?php
 // Include database connection file
 include_once "../db.php";
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get input value
@@ -9,13 +10,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Prepare the SQL query
     $query = "SELECT DOCUMENT.TITLE, COUNT(*) AS borrow_count
-              FROM BORROWS
-              INNER JOIN COPY ON BORROWS.DOCID = COPY.DOCID AND BORROWS.COPYNO = COPY.COPYNO
-              INNER JOIN DOCUMENT ON COPY.DOCID = DOCUMENT.DOCID
-              WHERE YEAR(DOCUMENT.PDATE) = ?
-              GROUP BY DOCUMENT.DOCID, DOCUMENT.TITLE
-              ORDER BY borrow_count DESC
-              LIMIT 10";
+                FROM BORROWING
+                INNER JOIN BORROWS ON BORROWING.BOR_NO = BORROWS.BOR_NO
+                INNER JOIN COPY ON BORROWS.DOCID = COPY.DOCID AND BORROWS.COPYNO = COPY.COPYNO
+                INNER JOIN DOCUMENT ON COPY.DOCID = DOCUMENT.DOCID
+                WHERE YEAR(BORROWING.BDTIME) = ?
+                GROUP BY DOCUMENT.DOCID, DOCUMENT.TITLE
+                ORDER BY borrow_count DESC
+                LIMIT 10";
      
     // Prepare the statement
     $stmt = $conn->prepare($query);
