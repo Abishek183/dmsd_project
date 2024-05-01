@@ -9,14 +9,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $branch_number = mysqli_real_escape_string($conn,$_POST["bid"]);
     
     // Prepare the SQL query
-    $query = "SELECT DOCUMENT.TITLE, COUNT(*) AS borrow_count
-              FROM BORROWS
-              INNER JOIN COPY ON BORROWS.DOCID = COPY.DOCID AND BORROWS.COPYNO = COPY.COPYNO
-              INNER JOIN DOCUMENT ON COPY.DOCID = DOCUMENT.DOCID
-              WHERE COPY.BID = ?
-              GROUP BY DOCUMENT.DOCID, DOCUMENT.TITLE
-              ORDER BY borrow_count DESC
-              LIMIT ?";
+    $query = "SELECT d.TITLE, COUNT(b.BOR_NO) AS borrow_count
+                FROM DOCUMENT d
+                JOIN COPY c ON d.DOCID = c.DOCID
+                JOIN BORROWS b ON c.DOCID = b.DOCID AND c.COPYNO = b.COPYNO
+                WHERE c.BID = ? AND b.BID = c.BID
+                GROUP BY d.TITLE
+                ORDER BY borrow_count DESC
+                LIMIT ?";
     
     // Prepare the statement
     $stmt = $conn->prepare($query);

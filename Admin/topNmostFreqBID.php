@@ -9,18 +9,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $N = $_POST["n"];
     $I = $_POST["bid"];
     
-    // Prepare the SQL query
-    $query = "SELECT READER.RID, READER.RNAME, COUNT(*) AS borrowed_count
+    $query = "SELECT READER.RID, READER.RNAME, COUNT(BORROWS.BOR_NO) AS borrowed_count
               FROM BORROWS
-              INNER JOIN READER ON BORROWS.RID = READER.RID
-              INNER JOIN COPY ON BORROWS.DOCID = COPY.DOCID AND BORROWS.COPYNO = COPY.COPYNO
-              WHERE COPY.BID = ? AND BORROWS.RID IS NOT NULL
+              JOIN READER ON BORROWS.RID = READER.RID
+              JOIN COPY ON BORROWS.DOCID = COPY.DOCID AND BORROWS.COPYNO = COPY.COPYNO AND BORROWS.BID = COPY.BID
+              WHERE COPY.BID = ?  -- Ensure this is filtering by branch
               GROUP BY READER.RID, READER.RNAME
               ORDER BY borrowed_count DESC
               LIMIT ?";
     
     // Prepare the statement
     $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        echo "Error preparing statement: " . htmlspecialchars($conn->error);
+        exit;
+    }
     $stmt->bind_param("ii", $I, $N);
     
     // Execute the statement
@@ -42,9 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Output data of each row
         while($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["RID"] . "</td>";
-            echo "<td>" . $row["RNAME"] . "</td>";
-            echo "<td>" . $row["borrowed_count"] . "</td>";
+            echo "<td>" . htmlspecialchars($row["RID"]) . "</td>";
+            echo "<td>" . htmlspecialchars($row["RNAME"]) . "</td>";
+            echo "<td>" . htmlspecialchars($row["borrowed_count"]) . "</td>";
             echo "</tr>";
         }
         

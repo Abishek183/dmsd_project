@@ -6,44 +6,58 @@ include_once "../db.php";
 
 // Check if search query is submitted
 if (isset($_GET['query'])) {
-    // Sanitize the search query
-    $search_query = mysqli_real_escape_string($conn, $_GET['query']);
+    $docId = intval($_GET['query']); // Convert input to an integer for security
 
-    // Construct the SQL query to retrieve available copies per branch for the given document
-    $sql = "SELECT DOCUMENT.DOCID, DOCUMENT.TITLE, PUBLISHER.PUBNAME
-            FROM DOCUMENT
-            LEFT JOIN PUBLISHER ON DOCUMENT.PUBLISHERID = PUBLISHER.PUBLISHERID
-            WHERE DOCUMENT.DOCID = '$search_query' OR DOCUMENT.TITLE LIKE '$search_query' OR PUBLISHER.PUBNAME LIKE '$search_query'
-            GROUP BY DOCUMENT.DOCID, DOCUMENT.TITLE, PUBLISHER.PUBNAME";
+    // SQL query to retrieve document information along with copy counts by branch
+    $sql = "SELECT d.DOCID, d.TITLE, p.PUBNAME, c.BID, COUNT(c.COPYNO) AS TotalCopies,
+            COALESCE(SUM(b.borrowed), 0) AS CopiesBorrowed, COALESCE(SUM(r.reserved), 0) AS CopiesReserved
+            FROM DOCUMENT d
+            JOIN PUBLISHER p ON d.PUBLISHERID = p.PUBLISHERID
+            JOIN COPY c ON d.DOCID = c.DOCID
+            LEFT JOIN (
+                SELECT b.DOCID, b.COPYNO, b.BID, COUNT(*) AS borrowed
+                FROM BORROWS b
+                JOIN BORROWING bo ON b.BOR_NO = bo.BOR_NO AND bo.RDTIME IS NULL
+                GROUP BY b.DOCID, b.COPYNO, b.BID
+            ) b ON c.DOCID = b.DOCID AND c.COPYNO = b.COPYNO AND c.BID = b.BID
+            LEFT JOIN (
+                SELECT r.DOCID, r.COPYNO, r.BID, COUNT(*) AS reserved
+                FROM RESERVES r
+                GROUP BY r.DOCID, r.COPYNO, r.BID
+            ) r ON c.DOCID = r.DOCID AND c.COPYNO = r.COPYNO AND c.BID = r.BID
+            WHERE d.DOCID = ?
+            GROUP BY d.DOCID, d.TITLE, p.PUBNAME, c.BID";
 
-    // Execute the SQL query
-    $result = mysqli_query($conn, $sql);
+    // Prepare the SQL statement
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param('i', $docId);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($docId, $title, $pubName, $branchId, $totalCopies, $copiesBorrowed, $copiesReserved);
 
-    // Check if any rows are returned
-    if (mysqli_num_rows($result) > 0) {
-        // Display the search results
-        echo "<h2>Search Results</h2>";
+        // Check if any results are returned
+        echo "<h2>Document Details</h2>";
         echo "<table border='1'>";
-        echo "<tr><th>Document ID</th><th>Title</th><th>Publisher</th><th>Branch ID</th><th>Available Copies</th></tr>";
-        while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr><th>Document ID</th><th>Title</th><th>Publisher</th><th>Branch ID</th><th>Total Copies</th><th>Copies Borrowed</th><th>Copies Reserved</th><th>Available Copies</th></tr>";
+        while ($stmt->fetch()) {
+            $availableCopies = $totalCopies - ($copiesBorrowed + $copiesReserved);
             echo "<tr>";
-            echo "<td>" . $row['DOCID'] . "</td>";
-            echo "<td>" . $row['TITLE'] . "</td>";
-            echo "<td>" . $row['PUBNAME'] . "</td>";
-            foreach ($totalCountsPerBranch as $branchID => $docCounts) {
-                if (isset($docCounts[$row['DOCID']])) {
-                    $totalCount = $docCounts[$row['DOCID']];
-                    echo "<td>" . $branchID . "</td>";
-                    echo "<td>" . $totalCount . "</td>";
-                    $found = true;
-                    break; // Exit the loop once the DOCID is found
-                }
-            }
+            echo "<td>" . htmlspecialchars($docId) . "</td>";
+            echo "<td>" . htmlspecialchars($title) . "</td>";
+            echo "<td>" . htmlspecialchars($pubName) . "</td>";
+            echo "<td>" . htmlspecialchars($branchId) . "</td>";
+            echo "<td>" . htmlspecialchars($totalCopies) . "</td>";
+            echo "<td>" . htmlspecialchars($copiesBorrowed) . "</td>";
+            echo "<td>" . htmlspecialchars($copiesReserved) . "</td>";
+            echo "<td>" . htmlspecialchars($availableCopies) . "</td>";
             echo "</tr>";
         }
         echo "</table>";
+        $stmt->close();
     } else {
-        echo "No documents found.";
+        echo "Error preparing the statement: " . htmlspecialchars($conn->error);
     }
+} else {
+    echo "No Document ID provided.";
 }
 ?>
