@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+include 'db.php';
 // Simple authentication for demonstration purposes
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
@@ -45,6 +45,11 @@ function showAdminMenu() {
                 <option value="search_document">Search Document Copy</option>
                 <option value="add_reader">Add New Reader</option>
                 <option value="print_branch">Print Branch Information</option>
+                <option value="reader_borrow_branch">Frequent Borrowers in Branch</option>
+                <option value="reader_borrow_library">Frequent Borrowers in the Library</option>
+                <option value="book_borrow_branch">Borrowed Books in Branch</option>
+                <option value="book_borrow_library">Borrowed Books in the Library</option>
+                <option value="popular_year">10 Most Popular Books</option>
             </select>
             <button type="button" onclick="submitForm()">Submit</button>
           </form>
@@ -92,10 +97,45 @@ function handleAdminAction($action) {
             }
             break;
         case 'add_reader':
-            if (!empty($_POST['rid'])) {
+            if (!empty($_POST['rtype'])) {
                 processAddReader();
             } else {
                 showAddReaderForm();
+            }
+            break;
+        case 'reader_borrow_branch':
+            if (!empty($_POST['branch'])) {
+                processBorrowerBranch();
+            } else {
+                showPrintTopNBorrowersForm();
+            }
+            break;
+        case 'reader_borrow_library':
+            if (!empty($_POST['num'])) {
+                processBorrowerLibrary();
+            } else {
+                showPrintTopNBorrowersLibraryForm();
+            }
+            break;
+        case 'book_borrow_branch':
+            if (!empty($_POST['branch'])) {
+                processBookBranch();
+            } else {
+                showPrintTopNBorrowedBooksBranchForm();
+            }
+            break;
+        case 'book_borrow_library':
+            if (!empty($_POST['num'])) {
+                processBookLibrary();
+            } else {
+                showPrintTopNBorrowedBooksLibraryForm();
+            }
+            break;
+        case 'popular_year':
+            if (!empty($_POST['year'])) {
+                processPopluar();
+            } else {
+                showPrintTopBooksOfYearForm();
             }
             break;
         case 'print_branch':
@@ -107,16 +147,68 @@ function handleAdminAction($action) {
 function processAddDocument() {
     // Add logic to process adding a document copy
     echo "Processing add document...";
-    // Add your database interaction code here
-    // Redirect after processing to avoid resubmission
+    $documentData = [
+        'title'        => $_POST['title'],
+        'pdate'        => $_POST['pdate'],
+        'publisherId'  => $_POST['publisherId']
+    ];
+    
     header('Location: adminMenu.php');
     exit;
 }
-
+function processBorrowerBranch() {
+    // Add logic to process adding a document copy
+    echo "Processing add document...";
+    $borrowerBranchData = [
+        'num'        => $_POST['num'],
+        'branch'        => $_POST['branch'],
+    ];
+    header('Location: adminMenu.php');
+    exit;
+}
+function processBorrowerLibrary() {
+    // Add logic to process adding a document copy
+    echo "Processing add document...";
+    $borrowerLibraryData = [
+        'num'        => $_POST['num']
+    ];
+    header('Location: adminMenu.php');
+    exit;
+}
+function processBookBranch() {
+    // Add logic to process adding a document copy
+    echo "Processing add document...";
+    $bookBranchData = [
+        'num'        => $_POST['num'],
+        'branch'        => $_POST['branch'],
+    ];
+    header('Location: adminMenu.php');
+    exit;
+}
+function processBookLibrary() {
+    // Add logic to process adding a document copy
+    echo "Processing add document...";
+    $bookLibraryData = [
+        'num'        => $_POST['num']
+    ];
+    header('Location: adminMenu.php');
+    exit;
+}
+function processPopluar() {
+    // Add logic to process adding a document copy
+    echo "Processing add document...";
+    $year = [
+        'year'        => $_POST['year']
+    ];
+    header('Location: adminMenu.php');
+    exit;
+}
 function processSearchDocument() {
     // Add logic to process searching a document copy
     echo "Processing search document...";
-    // Redirect after processing
+    $docidData = [
+        'docid'        => $_POST['docid']
+    ];
     header('Location: adminMenu.php');
     exit;
 }
@@ -124,15 +216,32 @@ function processSearchDocument() {
 function processAddReader() {
     // Add logic to process adding a new reader
     echo "Processing add reader...";
-    // Redirect after processing
-    //header('Location: adminMenu.php');
-    exit;
+
+    // Extract form data
+    $readerData = [
+        'rtype'     => $_POST['rtype'],
+        'rname'     => $_POST['rname'],
+        'raddress'  => $_POST['raddress'],
+        'phone_no'  => $_POST['phone_no']
+    ];
+
+    // Call insertReader function to insert the data into the database
+    if (insertReader($readerData)) {
+        echo "<p>Reader added successfully.</p>";
+       // header('Location: adminMenu.php');
+        exit;
+    } else {
+        echo "<p>Failed to add reader.</p>";
+    }
 }
+
 
 function processPrintBranch() {
     // Add logic to print branch information
     echo "Processing print branch information...";
-    // Redirect after processing
+    $branchIdData = [
+        'branchId'        => $_POST['branchId']
+    ];
     header('Location: adminMenu.php');
     exit;
 }
@@ -162,7 +271,6 @@ function showAddReaderForm() {
     echo '<h2>Add New Reader</h2>
           <form action="adminMenu.php" method="post">
               <input type="hidden" name="action" value="add_reader">
-              Reader ID: <input type="text" name="rid" required><br>
               Reader Type: <input type="text" name="rtype" required><br>
               Name: <input type="text" name="rname" required><br>
               Address: <input type="text" name="raddress" required><br>
@@ -175,7 +283,56 @@ function showPrintBranchForm() {
     echo '<h2>Print Branch Information</h2>
           <form action="adminMenu.php" method="post">
               <input type="hidden" name="action" value="print_branch">
+              Branch ID: <input type="text" name="branchId" required><br>
               <input type="submit" value="Print Branch Info">
+          </form>';
+}
+function showPrintTopNBorrowersForm() {
+    echo '<h2>Print Top N Borrowers</h2>
+          <form action="adminMenu.php.php" method="post">
+              <label for="num">Number of Borrowers (N):</label>
+              <input type="number" id="num" name="num" required>
+              <label for="branch">Branch Number (I):</label>
+              <input type="number" id="branch" name="branch" required>
+              <input type="submit" value="Print Top Borrowers">
+          </form>';
+}
+
+function showPrintTopNBorrowersLibraryForm() {
+    echo '<h2>Print Top N Borrowers in the Library</h2>
+          <form action="adminMenu.php" method="post">
+              <label for="num">Number of Borrowers (N):</label>
+              <input type="number" id="num" name="num" required>
+              <input type="submit" value="Print Top Borrowers">
+          </form>';
+}
+
+function showPrintTopNBorrowedBooksBranchForm() {
+    echo '<h2>Print Top N Borrowed Books in Branch</h2>
+          <form action="adminMenu.php" method="post">
+              <label for="num">Number of Books (N):</label>
+              <input type="number" id="num" name="num" required>
+              <label for="branch">Branch Number (I):</label>
+              <input type="number" id="branch" name="branch" required>
+              <input type="submit" value="Print Top Borrowed Books">
+          </form>';
+}
+
+function showPrintTopNBorrowedBooksLibraryForm() {
+    echo '<h2>Print Top N Borrowed Books in the Library</h2>
+          <form action="adminMenu.php" method="post">
+              <label for="num">Number of Books (N):</label>
+              <input type="number" id="num" name="num" required>
+              <input type="submit" value="Print Top Borrowed Books">
+          </form>';
+}
+
+function showPrintTopBooksOfYearForm() {
+    echo '<h2>Print Top 10 Books of a Year</h2>
+          <form action="adminMenu.php" method="post">
+              <label for="year">Year:</label>
+              <input type="number" id="year" name="year" required>
+              <input type="submit" value="Print Top Books">
           </form>';
 }
 ?>
