@@ -5,8 +5,8 @@ include_once "../db.php";
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get input values
-    $N = $_POST["N"];
-    $branch_number = sanitize($_POST["branch_number"]);
+    $N = $_POST["n"];
+    $branch_number = mysqli_real_escape_string($conn,$_POST["bid"]);
     
     // Prepare the SQL query
     $query = "SELECT DOCUMENT.TITLE, COUNT(*) AS borrow_count

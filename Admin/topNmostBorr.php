@@ -5,7 +5,7 @@ include_once "../db.php";
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get input value
-    $N = $_POST["N"];
+    $N = $_POST["n"];
     
     // Prepare the SQL query
     $query = "SELECT DOCUMENT.TITLE, COUNT(*) AS borrow_count

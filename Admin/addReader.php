@@ -13,8 +13,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Query to find available copies for the document at the branch
     
-    $query = "INSERT INTO READER (RTYPE, RNAME, RADDRESS, PHONE_NO) VALUES ($rtype, $rname, $raddress, $rphone)";
-
+    $query = "INSERT INTO READER (RTYPE, RNAME, RADDRESS, PHONE_NO) VALUES ('$rtype', '$rname', '$raddress', '$rphone')";
+    
     // Execute the query
     $result = mysqli_query($conn, $query);
 
