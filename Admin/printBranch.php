@@ -5,7 +5,7 @@ include_once "../db.php";
 session_start();
 
 // Prepare the SQL query
-$query = "SELECT LNAME, LOCATION FROM BRANCH";
+$query = "SELECT LNAME, LOCATION, BID FROM BRANCH";
 
 // Execute the query
 $result = $conn->query($query);
@@ -17,6 +17,7 @@ if ($result->num_rows > 0) {
             <tr>
                 <th>Branch Name</th>
                 <th>Location</th>
+                <th>Branch ID</th>
             </tr>";
     
     // Output data of each row
@@ -24,6 +25,7 @@ if ($result->num_rows > 0) {
         echo "<tr>";
         echo "<td>" . $row["LNAME"] . "</td>";
         echo "<td>" . $row["LOCATION"] . "</td>";
+        echo "<td>" . $row["BID"] . "</td>";
         echo "</tr>";
     }
     
