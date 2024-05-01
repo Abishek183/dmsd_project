@@ -73,7 +73,7 @@ INSERT INTO JOURNAL_ISSUE (DOCID, ISSUE_NO, SCOPE) VALUES
 (5, 5, 'Engineering'),
 (6, 6, 'Physics');
 
--- Insert into COPY
+-- Insert into COPY (matching each document to multiple copies if needed)
 INSERT INTO COPY (DOCID, COPYNO, BID, POSITION) VALUES
 (1, 1, 1, '001A01'),
 (2, 1, 2, '001B02'),
@@ -83,8 +83,16 @@ INSERT INTO COPY (DOCID, COPYNO, BID, POSITION) VALUES
 (6, 1, 3, '002C01'),
 (7, 1, 1, '003A01'),
 (8, 1, 2, '003B01'),
-(9, 1, 3, '003C01');
-
+(9, 1, 3, '003C01'),
+(1, 2, 1, '001A02'),
+(2, 2, 2, '001B03'),
+(3, 2, 3, '001C04'),
+(4, 2, 1, '002A02'),
+(5, 2, 2, '002B03'),
+(6, 2, 3, '002C04'),
+(7, 2, 1, '003A02'),
+(8, 2, 2, '003B03'),
+(9, 2, 3, '003C04');
 
 -- Insert into READER
 INSERT INTO READER (RTYPE, RNAME, RADDRESS, PHONE_NO) VALUES
@@ -117,7 +125,29 @@ INSERT INTO BORROWING (BDTIME, RDTIME, BFINE) VALUES
 ('2024-05-03 11:30:00', '2024-05-23 11:30:00', 0),
 ('2024-05-04 09:00:00', '2024-05-24 09:00:00', 0),
 ('2024-05-05 10:00:00', NULL, NULL),
-('2024-05-06 11:00:00', '2024-05-26 11:00:00', 0);
+('2024-05-06 11:00:00', '2024-05-26 11:00:00', 0),
+('2024-05-07 09:00:00', NULL, NULL),  -- Book not yet returned
+('2024-05-08 10:00:00', NULL, NULL),
+('2024-05-09 11:00:00', NULL, NULL),
+('2024-06-01 09:30:00', '2024-06-21 09:30:00', 0),
+('2024-06-02 10:30:00', NULL, NULL),  -- Not yet returned
+('2024-06-03 11:30:00', '2024-06-23 11:30:00', 0),
+('2024-06-04 09:00:00', '2024-06-24 09:00:00', 0),
+('2024-05-07 09:00:00', NULL, NULL),  -- Book not yet returned
+('2024-05-08 10:00:00', NULL, NULL),
+('2024-05-09 11:00:00', NULL, NULL),
+('2024-06-01 09:30:00', '2024-06-21 09:30:00', 0),
+('2024-05-07 09:00:00', NULL, NULL),  -- Book not yet returned
+('2024-05-08 10:00:00', NULL, NULL),
+('2024-05-09 11:00:00', NULL, NULL),
+('2024-06-01 09:30:00', '2024-06-21 09:30:00', 0),
+('2024-05-07 09:00:00', NULL, NULL),  -- Book not yet returned
+('2024-05-08 10:00:00', NULL, NULL),
+('2024-05-09 11:00:00', NULL, NULL),
+('2024-06-01 09:30:00', '2024-06-21 09:30:00', 0),
+('2024-06-05 10:00:00', NULL, NULL),  -- Not yet returned
+('2024-06-06 11:00:00', '2024-06-26 11:00:00', 0);
+
 
 -- Insert into BORROWS
 INSERT INTO BORROWS (BOR_NO, DOCID, COPYNO, BID, RID) VALUES
@@ -129,7 +159,28 @@ INSERT INTO BORROWS (BOR_NO, DOCID, COPYNO, BID, RID) VALUES
 (6, 6, 1, 3, 6),
 (7, 7, 1, 1, 1),
 (8, 8, 1, 2, 2),
-(9, 9, 1, 3, 3);
+(9, 9, 1, 3, 3),
+(10, 1, 1, 1, 4),  -- Borrowed by another reader after return
+(11, 2, 1, 2, 5),
+(12, 3, 1, 3, 6),
+(13, 1, 2, 1, 6), -- Borrowing second copy
+(14, 2, 2, 2, 5),
+(15, 3, 2, 3, 4),
+(16, 4, 1, 1, 3),
+(17, 5, 1, 2, 2),
+(18, 6, 1, 3, 1),
+(19, 7, 2, 1, 6), -- Borrowing second copy
+(20, 8, 2, 2, 5),
+(21, 9, 2, 3, 4),
+(22, 1, 2, 1, 4), -- Borrowing second copy again after return
+(23, 2, 2, 2, 1),
+(24, 3, 2, 3, 2),
+(25, 4, 2, 1, 5),
+(26, 5, 2, 2, 6),
+(27, 6, 2, 3, 1),
+(28, 7, 2, 1, 2), -- Borrowing second copy again
+(29, 8, 2, 2, 3),
+(30, 9, 2, 3, 4);
 
 -- Insert into USERLIB
 INSERT INTO USERSLIB (USERID, USERREADERID, USERTYPE, CARDNUMBER, PASSWORD) VALUES
