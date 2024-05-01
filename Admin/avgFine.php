@@ -9,11 +9,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $end_date = $_POST["end_date"];
     
     // Prepare the SQL query
-    $query = "SELECT BRANCH.BID, BRANCH.LNAME, AVG(BORROWING_FINE) AS avg_fine
-              FROM BRANCH
-              LEFT JOIN BORROWING ON BRANCH.BID = BORROWING.BID
-              WHERE BORROWING.BDTIME BETWEEN ? AND ?
-              GROUP BY BRANCH.BID, BRANCH.LNAME";
+    $query = "SELECT BRANCH.BID, BRANCH.LNAME, AVG(BORROWING.BFINE) AS avg_fine
+                FROM BRANCH
+                LEFT JOIN COPY ON BRANCH.BID = COPY.BID
+                LEFT JOIN BORROWS ON COPY.BID = BORROWS.BID AND COPY.COPYNO = BORROWS.COPYNO AND COPY.DOCID = BORROWS.DOCID
+                LEFT JOIN BORROWING ON BORROWS.BOR_NO = BORROWING.BOR_NO
+                WHERE YEAR(BORROWING.BDTIME) BETWEEN ? AND ?
+                GROUP BY BRANCH.BID, BRANCH.LNAME";
     
     // Prepare the statement
     $stmt = $conn->prepare($query);
